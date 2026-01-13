@@ -1,0 +1,584 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>OKF Store</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .hide-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+
+        .hide-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+
+        .fade-in {
+            animation: fadeIn 0.3s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
+        }
+    </style>
+</head>
+
+<body class="bg-white text-gray-900 antialiased pb-24">
+
+    <!-- Config -->
+    <script>
+        // --- CONFIGURATION ---
+        // 1. Deploy code.gs as Web App (Execute as Me, Who has access: Anyone)
+        // 2. Paste the Web App URL below
+        const GAS_APP_URL = 'https://script.google.com/macros/s/AKfycbx79wMHxEeF80sOXeVKhnIGZOAK-nlcId4nHJkeftvpf3Sk_viqtt7GvErU_HdO_Rr1/exec';
+
+        // If true, uses hardcoded data for testing without GAS
+        const MOCK_MODE = false; 
+    </script>
+
+    <!-- Header -->
+    <header class="fixed top-0 left-0 right-0 bg-white/90 backdrop-blur-md z-40 border-b border-gray-100">
+        <div class="max-w-7xl mx-auto px-4 h-16 flex items-center justify-between">
+            <div class="font-bold text-xl tracking-tight text-green-700 flex items-center gap-2">
+                <span>OKF Store</span>
+            </div>
+
+            <div class="flex items-center gap-4">
+                <button onclick="toggleLang()"
+                    class="text-sm font-medium text-gray-500 hover:text-gray-900 transition px-2 py-1 rounded-md hover:bg-gray-100"
+                    id="lang-btn">RU</button>
+                <div class="relative cursor-pointer p-2 hover:bg-gray-100 rounded-full transition" onclick="openCart()">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-gray-700" fill="none"
+                        viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
+                    </svg>
+                    <span id="cart-badge"
+                        class="absolute top-0 right-0 bg-red-500 text-white text-[10px] font-bold w-4 h-4 rounded-full flex items-center justify-center hidden">0</span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="max-w-7xl mx-auto pt-20 px-4 md:px-8">
+
+        <!-- Search & Filter -->
+        <div
+            class="sticky top-16 bg-white z-30 py-4 -mx-4 px-4 md:mx-0 md:px-0 border-b md:border-none border-gray-50 mb-6 flex flex-col md:flex-row md:items-center gap-4">
+            <div class="relative w-full md:max-w-sm">
+                <input type="text" id="search-input" placeholder="Поиск..."
+                    class="w-full bg-gray-100 border-none rounded-xl py-3 pl-10 pr-4 text-sm focus:ring-2 focus:ring-green-500 outline-none placeholder-gray-400 transition hover:bg-gray-50">
+                <svg class="absolute left-3 top-3 h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24"
+                    stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                </svg>
+            </div>
+
+            <div class="flex gap-2 overflow-x-auto hide-scrollbar pb-1 md:pb-0 md:flex-wrap" id="category-chips">
+                <!-- Chips injected by JS -->
+            </div>
+        </div>
+
+        <!-- Product Grid -->
+        <div id="product-grid"
+            class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 md:gap-6 pb-24">
+            <!-- Products injected by JS -->
+            <div class="col-span-2 text-center py-10 text-gray-400 text-sm animate-pulse">Загрузка...</div>
+        </div>
+    </main>
+
+    <!-- Cart Modal -->
+    <div id="cart-modal" class="fixed inset-0 z-50 hidden">
+        <div class="absolute inset-0 bg-black/40 backdrop-blur-sm transition-opacity" onclick="closeCart()"></div>
+        <!-- Mobile: Bottom Sheet, Desktop: Right Sidebar or Centered Modal. Let's do Centered Modal for PC style -->
+        <div class="absolute bottom-0 md:top-1/2 md:left-1/2 md:bottom-auto md:-translate-x-1/2 md:-translate-y-1/2 left-0 right-0 bg-white md:rounded-2xl rounded-t-3xl p-6 min-h-[50vh] md:min-h-0 md:h-auto md:max-h-[85vh] md:w-full md:max-w-lg overflow-y-auto transform transition-transform duration-300 translate-y-full md:translate-y-10 md:opacity-0 shadow-2xl"
+            id="cart-content">
+            <div class="flex justify-between items-center mb-6">
+                <h2 class="text-xl font-bold" data-t="cart_title">Корзина</h2>
+                <button onclick="closeCart()" class="p-2 bg-gray-100 hover:bg-gray-200 rounded-full transition">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12">
+                        </path>
+                    </svg>
+                </button>
+            </div>
+
+            <div id="cart-items" class="space-y-4 mb-24 md:mb-6">
+                <div class="text-center text-gray-400 py-10" data-t="cart_empty">Корзина пуста</div>
+            </div>
+
+            <!-- Cart Footer -->
+            <div
+                class="fixed bottom-0 md:static left-0 right-0 p-6 md:p-0 bg-white border-t border-gray-100 md:border-none">
+                <div class="flex justify-between items-center mb-4">
+                    <span class="text-gray-500" data-t="total">Итого:</span>
+                    <span class="text-xl font-bold" id="cart-total">0 UZS</span>
+                </div>
+                <button onclick="openCheckout()" id="checkout-btn"
+                    class="w-full bg-green-600 text-white py-4 rounded-xl font-bold shadow-lg shadow-green-200 active:scale-95 transition disabled:opacity-50 disabled:cursor-not-allowed hover:bg-green-700"
+                    disabled data-t="checkout_btn">
+                    Оформить заказ
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Checkout Modal -->
+    <div id="checkout-modal" class="fixed inset-0 z-[60] hidden bg-white">
+        <div class="max-w-md mx-auto h-full flex flex-col">
+            <div class="flex items-center p-4 border-b border-gray-100">
+                <button onclick="closeCheckout()" class="p-2 mr-2">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7">
+                        </path>
+                    </svg>
+                </button>
+                <h2 class="text-lg font-bold" data-t="checkout_title">Оформление заказа</h2>
+            </div>
+
+            <div class="flex-1 overflow-y-auto p-6 space-y-6">
+
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1" data-t="label_name">Имя</label>
+                    <input type="text" id="order-name"
+                        class="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 focus:ring-2 focus:ring-green-500 outline-none">
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1" data-t="label_phone">Телефон</label>
+                    <input type="tel" id="order-phone" placeholder="+998"
+                        class="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 focus:ring-2 focus:ring-green-500 outline-none">
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1" data-t="label_district">Район
+                        (Ташкент)</label>
+                    <select id="order-district"
+                        class="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 focus:ring-2 focus:ring-green-500 outline-none appearance-none">
+                        <option value="" disabled selected>Выберите район</option>
+                        <option value="Алмазарский">Алмазарский</option>
+                        <option value="Бектемирский">Бектемирский</option>
+                        <option value="Мирабадский">Мирабадский</option>
+                        <option value="Мирзо-Улугбекский">Мирзо-Улугбекский</option>
+                        <option value="Сергелийский">Сергелийский</option>
+                        <option value="Учтепинский">Учтепинский</option>
+                        <option value="Чиланзарский">Чиланзарский</option>
+                        <option value="Шайхантахурский">Шайхантахурский</option>
+                        <option value="Юнусабадский">Юнусабадский</option>
+                        <option value="Яккасарайский">Яккасарайский</option>
+                        <option value="Яшнабадский">Яшнабадский</option>
+                        <option value="Янгихаётский">Янгихаётский</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1" data-t="label_address">Точный адрес
+                        (Улица, Дом, Кв)</label>
+                    <textarea id="order-address" rows="3"
+                        class="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 focus:ring-2 focus:ring-green-500 outline-none"></textarea>
+                </div>
+
+            </div>
+
+            <div class="p-6 border-t border-gray-100">
+                <button onclick="submitOrder()" id="submit-btn"
+                    class="w-full bg-black text-white py-4 rounded-xl font-bold shadow-lg active:scale-95 transition"
+                    data-t="submit_btn">
+                    Подтвердить заказ
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Notification -->
+    <div id="toast"
+        class="fixed top-4 left-1/2 transform -translate-x-1/2 bg-gray-900 text-white px-6 py-3 rounded-full shadow-xl z-[70] transition-opacity opacity-0 pointer-events-none text-sm font-medium">
+        Notification
+    </div>
+
+    <script>
+        // --- DATA & STATE ---
+        const TR = {
+            ru: {
+                search: 'Поиск...',
+                add: 'В корзину',
+                cart_title: 'Корзина',
+                cart_empty: 'В корзине пусто',
+                total: 'Итого:',
+                checkout_btn: 'Оформить заказ',
+                checkout_title: 'Оформление',
+                label_name: 'Имя',
+                label_phone: 'Телефон',
+                label_district: 'Район',
+                label_address: 'Адрес',
+                submit_btn: 'Подтвердить заказ',
+                all: 'Все',
+                success: 'Заказ успешно отправлен!',
+                error: 'Ошибка отправки.'
+            },
+            en: {
+                search: 'Search...',
+                add: 'Add to Cart',
+                cart_title: 'Cart',
+                cart_empty: 'Cart is empty',
+                total: 'Total:',
+                checkout_btn: 'Checkout',
+                checkout_title: 'Checkout',
+                label_name: 'Name',
+                label_phone: 'Phone',
+                label_district: 'District',
+                label_address: 'Address',
+                submit_btn: 'Confirm Order',
+                all: 'All',
+                success: 'Order placed successfully!',
+                error: 'Error placing order.'
+            },
+            uz: {
+                search: 'Qidirish...',
+                add: 'Savatga',
+                cart_title: 'Savat',
+                cart_empty: 'Savat bo\'sh',
+                total: 'Jami:',
+                checkout_btn: 'Buyurtma berish',
+                checkout_title: 'Buyurtma',
+                label_name: 'Ism',
+                label_phone: 'Telefon',
+                label_district: 'Tuman',
+                label_address: 'Manzil',
+                submit_btn: 'Tasdiqlash',
+                all: 'Hammasi',
+                success: 'Buyurtma muvaffaqiyatli yuborildi!',
+                error: 'Buyurtma yuborishda xatolik.'
+            }
+        };
+
+        const MOCK_PRODUCTS = [
+            { name: 'OKF Aloe Vera Original', price: 12000, category: 'Drinks', image: 'https://m.media-amazon.com/images/I/71u-sE+bZ+L._SL1500_.jpg' },
+            { name: 'OKF Aloe Vera King', price: 15000, category: 'Drinks', image: 'https://m.media-amazon.com/images/I/41DqWspB-JL.jpg' },
+            { name: 'OKF Coffee Drink', price: 18000, category: 'Coffee', image: 'https://m.media-amazon.com/images/I/71R1k-wQy1L.jpg' },
+            { name: 'Milkis Original', price: 11000, category: 'Soda', image: 'https://m.media-amazon.com/images/I/61kP7J+VqLL.jpg' },
+            { name: 'Choco Pie', price: 25000, category: 'Snacks', image: 'https://m.media-amazon.com/images/I/61F+d+a+VLL.jpg' },
+        ];
+
+        const log = (msg) => {
+            console.log(msg);
+            const el = document.getElementById('debug-log');
+            if (el) el.innerText += '\n' + (typeof msg === 'object' ? JSON.stringify(msg, null, 2) : msg);
+        }
+
+        let state = {
+            lang: 'ru',
+            products: [],
+            cart: [],
+            activeCategory: 'all',
+            searchQuery: ''
+        };
+
+        // --- INIT ---
+        document.addEventListener('DOMContentLoaded', () => {
+            loadCart();
+            fetchProducts();
+            renderLang();
+        });
+
+        // --- LOGIC ---
+        function toggleLang() {
+            const langs = ['ru', 'en', 'uz'];
+            let idx = langs.indexOf(state.lang);
+            state.lang = langs[(idx + 1) % 3];
+            document.getElementById('lang-btn').innerText = state.lang.toUpperCase();
+            renderLang();
+            renderCategories(); // Update "All" text
+            renderProducts(); // Re-render to update buttons if needed
+        }
+
+        function renderLang() {
+            const t = TR[state.lang];
+            document.querySelectorAll('[data-t]').forEach(el => {
+                const key = el.getAttribute('data-t');
+                if (t[key]) el.innerText = t[key];
+            });
+            document.getElementById('search-input').placeholder = t.search;
+        }
+
+        async function fetchProducts() {
+            log("Starting fetch...");
+            log("URL: " + GAS_APP_URL);
+
+            if (MOCK_MODE) {
+                state.products = MOCK_PRODUCTS;
+            } else {
+                try {
+                    const res = await fetch(GAS_APP_URL);
+                    log("Response status: " + res.status);
+
+                    if (!res.ok) throw new Error("HTTP " + res.status);
+
+                    const text = await res.text();
+                    log("Raw body length: " + text.length);
+                    log("Raw body start: " + text.substring(0, 100)); // Log first 100 chars
+
+                    try {
+                        state.products = JSON.parse(text);
+                        log("Parsed JSON items: " + state.products.length);
+                        if (state.products.length > 0) {
+                            log("First Item: " + JSON.stringify(state.products[0]));
+                        }
+                    } catch (parseErr) {
+                        log("JSON Parse Error: " + parseErr);
+                        log("Trying to handle as HTML error...");
+                        if (text.includes("Google Drive")) log("It looks like a Google Drive error page, not JSON.");
+                        if (text.includes("script.google.com")) log("It looks like a script error page.");
+                    }
+
+                } catch (e) {
+                    console.error("Fetch error", e);
+                    log("FETCH ERROR: " + e.toString());
+                    showToast('Failed to load products');
+                }
+            }
+            renderCategories();
+            renderProducts();
+        }
+
+        function renderCategories() {
+            const container = document.getElementById('category-chips');
+            const categories = ['all', ...new Set(state.products.map(p => p.category || 'Other'))];
+
+            container.innerHTML = categories.map(cat => `
+                <button onclick="setCategory('${cat}')" 
+                    class="px-4 py-2 rounded-full text-xs font-medium whitespace-nowrap transition ${state.activeCategory === cat ? 'bg-black text-white' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'}">
+                    ${cat === 'all' ? TR[state.lang].all : cat}
+                </button>
+            `).join('');
+        }
+
+        function setCategory(cat) {
+            state.activeCategory = cat;
+            renderCategories();
+            renderProducts();
+        }
+
+        document.getElementById('search-input').addEventListener('input', (e) => {
+            state.searchQuery = e.target.value.toLowerCase();
+            renderProducts();
+        });
+
+        function renderProducts() {
+            const grid = document.getElementById('product-grid');
+            const filtered = state.products.filter(p => {
+                const matchSearch = p.name.toLowerCase().includes(state.searchQuery);
+                const matchCat = state.activeCategory === 'all' || p.category === state.activeCategory;
+                return matchSearch && matchCat;
+            });
+
+            if (filtered.length === 0) {
+                grid.innerHTML = `<div class="col-span-2 text-center text-gray-400 py-10">Ничего не найдено</div>`;
+                return;
+            }
+
+            grid.innerHTML = filtered.map((p, idx) => `
+                <div class="bg-white rounded-2xl p-4 shadow-[0_4px_20px_rgba(0,0,0,0.03)] border border-gray-50 flex flex-col items-center text-center group active:scale-[0.98] transition">
+                    <div class="w-full h-32 mb-4 flex items-center justify-center overflow-hidden rounded-xl bg-gray-50 relative">
+                         <!-- Fallback image logic if needed -->
+                        <img src="${p.image || 'https://via.placeholder.com/150'}" class="h-full object-contain mix-blend-multiply group-hover:scale-110 transition duration-500" alt="${p.name}">
+                    </div>
+                    <h3 class="font-medium text-sm text-gray-800 line-clamp-2 mb-1 leading-tight">${p.name}</h3>
+                    <div class="mt-auto pt-3 w-full">
+                        <div class="text-green-700 font-bold mb-3">${Number(p.price).toLocaleString()} UZS</div>
+                        <button onclick="addToCart(${idx})" class="w-full bg-gray-900 text-white text-xs font-bold py-3 rounded-xl hover:bg-green-600 transition">${TR[state.lang].add}</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // --- CART ---
+        function addToCart(idx) {
+            // Need to find actual product object from filtered list if filtered? 
+            // Better to pass ID or name. Since simple, let's look up in state.products 
+            // But wait, the index above came from filtered list? No, map index works if we pass the object.
+            // Let's refactor render to pass the name.
+            const product = document.getElementById('product-grid').children[idx].querySelector('h3').innerText;
+            const item = state.products.find(p => p.name === product); // Simple match
+
+            if (!item) return;
+
+            const existing = state.cart.find(i => i.name === item.name);
+            if (existing) {
+                existing.count++;
+            } else {
+                state.cart.push({ ...item, count: 1 });
+            }
+            saveCart();
+            showToast('+ ' + item.name);
+            updateBadge();
+        }
+
+        function loadCart() {
+            const saved = localStorage.getItem('okf_cart');
+            if (saved) state.cart = JSON.parse(saved);
+            updateBadge();
+        }
+
+        function saveCart() {
+            localStorage.setItem('okf_cart', JSON.stringify(state.cart));
+            updateBadge();
+            renderCartItems();
+        }
+
+        function updateBadge() {
+            const count = state.cart.reduce((a, b) => a + b.count, 0);
+            const badge = document.getElementById('cart-badge');
+            badge.innerText = count;
+            badge.classList.toggle('hidden', count === 0);
+
+            const total = state.cart.reduce((a, b) => a + (b.price * b.count), 0);
+            document.getElementById('cart-total').innerText = total.toLocaleString() + ' UZS';
+            document.getElementById('checkout-btn').disabled = count === 0;
+        }
+
+        function openCart() {
+            const modal = document.getElementById('cart-modal');
+            const content = document.getElementById('cart-content');
+
+            modal.classList.remove('hidden');
+            // Small delay to allow display:block to apply before transition
+            setTimeout(() => {
+                content.classList.remove('translate-y-full', 'md:translate-y-10', 'md:opacity-0');
+            }, 10);
+            renderCartItems();
+        }
+
+        function closeCart() {
+            const modal = document.getElementById('cart-modal');
+            const content = document.getElementById('cart-content');
+
+            content.classList.add('translate-y-full', 'md:translate-y-10', 'md:opacity-0');
+            setTimeout(() => {
+                modal.classList.add('hidden');
+            }, 300);
+        }
+
+        function renderCartItems() {
+            const container = document.getElementById('cart-items');
+            if (state.cart.length === 0) {
+                container.innerHTML = `<div class="text-center text-gray-400 py-10">${TR[state.lang].cart_empty}</div>`;
+                return;
+            }
+
+            container.innerHTML = state.cart.map((item, idx) => `
+                <div class="flex items-center gap-4 bg-gray-50 p-3 rounded-xl">
+                    <img src="${item.image || 'https://via.placeholder.com/50'}" class="w-16 h-16 object-contain bg-white rounded-lg p-1">
+                    <div class="flex-1">
+                        <div class="text-sm font-medium leading-tight mb-1">${item.name}</div>
+                        <div class="text-xs text-gray-500">${Number(item.price).toLocaleString()} UZS</div>
+                    </div>
+                    <div class="flex items-center gap-3 bg-white px-2 py-1 rounded-lg border border-gray-100 shadow-sm">
+                        <button onclick="updateCount(${idx}, -1)" class="w-6 h-6 flex items-center justify-center text-gray-400 hover:text-black font-bold">-</button>
+                        <span class="text-sm font-medium w-4 text-center">${item.count}</span>
+                        <button onclick="updateCount(${idx}, 1)" class="w-6 h-6 flex items-center justify-center text-gray-400 hover:text-black font-bold">+</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function updateCount(idx, delta) {
+            state.cart[idx].count += delta;
+            if (state.cart[idx].count <= 0) {
+                state.cart.splice(idx, 1);
+            }
+            saveCart();
+        }
+
+        // --- CHECKOUT ---
+        function openCheckout() {
+            closeCart();
+            document.getElementById('checkout-modal').classList.remove('hidden');
+        }
+
+        function closeCheckout() {
+            document.getElementById('checkout-modal').classList.add('hidden');
+        }
+
+        async function submitOrder() {
+            const btn = document.getElementById('submit-btn');
+            const data = {
+                name: document.getElementById('order-name').value,
+                phone: document.getElementById('order-phone').value,
+                district: document.getElementById('order-district').value,
+                address: document.getElementById('order-address').value,
+                cart: state.cart,
+                total: state.cart.reduce((a, b) => a + (b.price * b.count), 0)
+            };
+
+            if (!data.name || !data.phone || !data.district || !data.address) {
+                showToast('Заполните все поля!');
+                return;
+            }
+
+            btn.disabled = true;
+            btn.innerText = 'Sending...';
+
+            if (MOCK_MODE) {
+                setTimeout(() => {
+                    showToast(TR[state.lang].success);
+                    state.cart = [];
+                    saveCart();
+                    closeCheckout();
+                    btn.disabled = false;
+                    btn.innerText = TR[state.lang].submit_btn;
+                }, 1000);
+            } else {
+                try {
+                    const res = await fetch(GAS_APP_URL, {
+                        method: 'POST',
+                        body: JSON.stringify(data)
+                    });
+                    const resData = await res.json();
+                    if (resData.status === 'success') {
+                        showToast(TR[state.lang].success);
+                        state.cart = [];
+                        saveCart();
+                        closeCheckout();
+                    } else {
+                        showToast(TR[state.lang].error + ' ' + resData.message);
+                    }
+                } catch (e) {
+                    showToast(TR[state.lang].error);
+                    console.error(e);
+                } finally {
+                    btn.disabled = false;
+                    btn.innerText = TR[state.lang].submit_btn;
+                }
+            }
+        }
+
+        function showToast(msg) {
+            const toast = document.getElementById('toast');
+            toast.innerText = msg;
+            toast.classList.remove('opacity-0', 'translate-y-4');
+            setTimeout(() => {
+                toast.classList.add('opacity-0', 'translate-y-4');
+            }, 3000);
+        }
+    </script>
+</body>
+
+</html>
