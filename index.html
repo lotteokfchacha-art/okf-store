@@ -213,6 +213,20 @@
         Notification
     </div>
 
+    <!-- Lightbox -->
+    <div id="lightbox"
+        class="fixed inset-0 z-[80] bg-black/90 hidden flex items-center justify-center p-4 backdrop-blur-sm"
+        onclick="closeImage()">
+        <button onclick="closeImage()"
+            class="absolute top-4 right-4 text-white p-2 bg-white/10 rounded-full hover:bg-white/20 transition">
+            <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+            </svg>
+        </button>
+        <img id="lightbox-img" src="" class="max-h-full max-w-full object-contain rounded-lg shadow-2xl"
+            onclick="event.stopPropagation()">
+    </div>
+
     <script>
         // --- DATA & STATE ---
         const TR = {
@@ -405,19 +419,32 @@
                 return;
             }
 
-            grid.innerHTML = filtered.map((p, idx) => `
+            grid.innerHTML = filtered.map((p, idx) => {
+                const inCart = state.cart.find(c => c.name === p.name);
+                const count = inCart ? inCart.count : 0;
+
+                return `
                 <div class="bg-white rounded-2xl p-4 shadow-[0_4px_20px_rgba(0,0,0,0.03)] border border-gray-50 flex flex-col items-center text-center group active:scale-[0.98] transition">
-                    <div class="w-full h-32 mb-4 flex items-center justify-center overflow-hidden rounded-xl bg-gray-50 relative">
+                    <div class="w-full h-32 mb-4 flex items-center justify-center overflow-hidden rounded-xl bg-gray-50 relative cursor-zoom-in" onclick="openImage('${p.image || ''}')">
                          <!-- Fallback image logic if needed -->
                         <img src="${p.image || 'https://via.placeholder.com/150'}" class="h-full object-contain mix-blend-multiply group-hover:scale-110 transition duration-500" alt="${escapeHtml(p.name)}">
                     </div>
                     <h3 class="font-medium text-sm text-gray-800 line-clamp-2 mb-1 leading-tight">${escapeHtml(p.name)}</h3>
                     <div class="mt-auto pt-3 w-full">
                         <div class="text-green-700 font-bold mb-3">${Number(p.price).toLocaleString()} UZS</div>
-                        <button onclick="addToCart(${idx})" class="w-full bg-gray-900 text-white text-xs font-bold py-3 rounded-xl hover:bg-green-600 transition">${TR[state.lang].add}</button>
+                        
+                        ${count > 0 ? `
+                            <div class="flex items-center justify-between bg-gray-900 text-white rounded-xl overflow-hidden h-[42px]">
+                                <button onclick="updateProductCount('${escapeHtml(p.name)}', -1)" class="w-12 h-full flex items-center justify-center hover:bg-gray-700 transition font-bold text-lg">-</button>
+                                <span class="font-bold text-sm">${count}</span>
+                                <button onclick="updateProductCount('${escapeHtml(p.name)}', 1)" class="w-12 h-full flex items-center justify-center hover:bg-gray-700 transition font-bold text-lg">+</button>
+                            </div>
+                        ` : `
+                            <button onclick="updateProductCount('${escapeHtml(p.name)}', 1)" class="w-full bg-gray-900 text-white text-xs font-bold py-3 rounded-xl hover:bg-green-600 transition h-[42px]">${TR[state.lang].add}</button>
+                        `}
                     </div>
                 </div>
-            `).join('');
+            `}).join('');
         }
 
         // --- CART ---
@@ -452,6 +479,7 @@
             localStorage.setItem('okf_cart', JSON.stringify(state.cart));
             updateBadge();
             renderCartItems();
+            renderProducts(); // Re-render grid to update counts
         }
 
         function updateBadge() {
@@ -514,6 +542,23 @@
             state.cart[idx].count += delta;
             if (state.cart[idx].count <= 0) {
                 state.cart.splice(idx, 1);
+            }
+            saveCart();
+        }
+
+        function updateProductCount(name, delta) {
+            const itemIdx = state.cart.findIndex(i => i.name === name);
+            if (itemIdx > -1) {
+                state.cart[itemIdx].count += delta;
+                if (state.cart[itemIdx].count <= 0) {
+                    state.cart.splice(itemIdx, 1);
+                }
+            } else if (delta > 0) {
+                const product = state.products.find(p => p.name === name);
+                if (product) {
+                    state.cart.push({ ...product, count: 1 });
+                    showToast('+ ' + product.name);
+                }
             }
             saveCart();
         }
@@ -588,6 +633,20 @@
             setTimeout(() => {
                 toast.classList.add('opacity-0', 'translate-y-4');
             }, 3000);
+        }
+
+        // --- LIGHTBOX ---
+        function openImage(src) {
+            if (!src) return;
+            const lightbox = document.getElementById('lightbox');
+            const img = document.getElementById('lightbox-img');
+            img.src = src;
+            lightbox.classList.remove('hidden');
+        }
+
+        function closeImage() {
+            const lightbox = document.getElementById('lightbox');
+            lightbox.classList.add('hidden');
         }
     </script>
 </body>
