@@ -4,31 +4,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <meta name="color-scheme" content="light dark">
     <title>OKF Store</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-        tailwind.config = {
-            darkMode: 'media',
-            theme: {
-                extend: {
-                    colors: {
-                        dark: {
-                            bg: '#111827',
-                            card: '#1F2937',
-                            input: '#374151'
-                        }
-                    }
-                }
-            }
-        }
-    </script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        :root {
-            color-scheme: light dark;
-        }
-
         body {
             font-family: 'Inter', sans-serif;
             -webkit-tap-highlight-color: transparent;
@@ -59,8 +38,7 @@
     </style>
 </head>
 
-<body
-    class="bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 antialiased pb-24 transition-colors duration-300">
+<body class="bg-white text-gray-900 antialiased pb-24">
 
     <!-- Config -->
     <script>
@@ -74,20 +52,18 @@
     </script>
 
     <!-- Header -->
-    <header
-        class="fixed top-0 left-0 right-0 bg-white/90 dark:bg-gray-900/90 backdrop-blur-md z-40 border-b border-gray-100 dark:border-gray-800 transition-colors duration-300">
+    <header class="fixed top-0 left-0 right-0 bg-white/90 backdrop-blur-md z-40 border-b border-gray-100">
         <div class="max-w-7xl mx-auto px-4 h-16 flex items-center justify-between">
-            <div class="font-bold text-xl tracking-tight text-green-700 dark:text-green-500 flex items-center gap-2">
+            <div class="font-bold text-xl tracking-tight text-green-700 flex items-center gap-2">
                 <span>OKF Store</span>
             </div>
 
             <div class="flex items-center gap-4">
                 <button onclick="toggleLang()"
-                    class="text-sm font-medium text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition px-2 py-1 rounded-md hover:bg-gray-100 dark:hover:bg-gray-800"
+                    class="text-sm font-medium text-gray-500 hover:text-gray-900 transition px-2 py-1 rounded-md hover:bg-gray-100"
                     id="lang-btn">RU</button>
-                <div class="relative cursor-pointer p-2 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-full transition"
-                    onclick="openCart()">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-gray-700 dark:text-gray-200" fill="none"
+                <div class="relative cursor-pointer p-2 hover:bg-gray-100 rounded-full transition" onclick="openCart()">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-gray-700" fill="none"
                         viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                             d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
@@ -104,10 +80,10 @@
 
         <!-- Search & Filter -->
         <div
-            class="sticky top-16 bg-white dark:bg-gray-900 z-30 py-4 -mx-4 px-4 md:mx-0 md:px-0 border-b md:border-none border-gray-50 dark:border-gray-800 mb-6 flex flex-col md:flex-row md:items-center gap-4 transition-colors duration-300">
+            class="sticky top-16 bg-white z-30 py-4 -mx-4 px-4 md:mx-0 md:px-0 border-b md:border-none border-gray-50 mb-6 flex flex-col md:flex-row md:items-center gap-4">
             <div class="relative w-full md:max-w-sm">
                 <input type="text" id="search-input" placeholder="Поиск..."
-                    class="w-full bg-gray-100 dark:bg-gray-800 border-none rounded-xl py-3 pl-10 pr-4 text-sm dark:text-white focus:ring-2 focus:ring-green-500 outline-none placeholder-gray-400 transition hover:bg-gray-50 dark:hover:bg-gray-700">
+                    class="w-full bg-gray-100 border-none rounded-xl py-3 pl-10 pr-4 text-sm focus:ring-2 focus:ring-green-500 outline-none placeholder-gray-400 transition hover:bg-gray-50">
                 <svg class="absolute left-3 top-3 h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24"
                     stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -132,12 +108,11 @@
     <div id="cart-modal" class="fixed inset-0 z-50 hidden">
         <div class="absolute inset-0 bg-black/40 backdrop-blur-sm transition-opacity" onclick="closeCart()"></div>
         <!-- Mobile: Bottom Sheet, Desktop: Right Sidebar or Centered Modal. Let's do Centered Modal for PC style -->
-        <div class="absolute bottom-0 md:top-1/2 md:left-1/2 md:bottom-auto md:-translate-x-1/2 md:-translate-y-1/2 left-0 right-0 bg-white dark:bg-gray-800 md:rounded-2xl rounded-t-3xl p-6 min-h-[50vh] md:min-h-0 md:h-auto md:max-h-[85vh] md:w-full md:max-w-lg overflow-y-auto transform transition-transform duration-300 translate-y-full md:translate-y-10 md:opacity-0 shadow-2xl dark:shadow-black/50"
+        <div class="absolute bottom-0 md:top-1/2 md:left-1/2 md:bottom-auto md:-translate-x-1/2 md:-translate-y-1/2 left-0 right-0 bg-white md:rounded-2xl rounded-t-3xl p-6 min-h-[50vh] md:min-h-0 md:h-auto md:max-h-[85vh] md:w-full md:max-w-lg overflow-y-auto transform transition-transform duration-300 translate-y-full md:translate-y-10 md:opacity-0 shadow-2xl"
             id="cart-content">
             <div class="flex justify-between items-center mb-6">
-                <h2 class="text-xl font-bold dark:text-white" data-t="cart_title">Корзина</h2>
-                <button onclick="closeCart()"
-                    class="p-2 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 rounded-full transition dark:text-white">
+                <h2 class="text-xl font-bold" data-t="cart_title">Корзина</h2>
+                <button onclick="closeCart()" class="p-2 bg-gray-100 hover:bg-gray-200 rounded-full transition">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12">
                         </path>
@@ -151,10 +126,10 @@
 
             <!-- Cart Footer -->
             <div
-                class="fixed bottom-0 md:static left-0 right-0 p-6 md:p-0 bg-white dark:bg-gray-800 border-t border-gray-100 dark:border-gray-700 md:border-none">
+                class="fixed bottom-0 md:static left-0 right-0 p-6 md:p-0 bg-white border-t border-gray-100 md:border-none">
                 <div class="flex justify-between items-center mb-4">
-                    <span class="text-gray-500 dark:text-gray-400" data-t="total">Итого:</span>
-                    <span class="text-xl font-bold dark:text-white" id="cart-total">0 UZS</span>
+                    <span class="text-gray-500" data-t="total">Итого:</span>
+                    <span class="text-xl font-bold" id="cart-total">0 UZS</span>
                 </div>
                 <button onclick="openCheckout()" id="checkout-btn"
                     class="w-full bg-green-600 text-white py-4 rounded-xl font-bold shadow-lg shadow-green-200 active:scale-95 transition disabled:opacity-50 disabled:cursor-not-allowed hover:bg-green-700"
@@ -166,10 +141,9 @@
     </div>
 
     <!-- Checkout Modal -->
-    <div id="checkout-modal"
-        class="fixed inset-0 z-[60] hidden bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 transition-colors duration-300">
+    <div id="checkout-modal" class="fixed inset-0 z-[60] hidden bg-white">
         <div class="max-w-md mx-auto h-full flex flex-col">
-            <div class="flex items-center p-4 border-b border-gray-100 dark:border-gray-800">
+            <div class="flex items-center p-4 border-b border-gray-100">
                 <button onclick="closeCheckout()" class="p-2 mr-2">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7">
@@ -182,25 +156,22 @@
             <div class="flex-1 overflow-y-auto p-6 space-y-6">
 
                 <div>
-                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
-                        data-t="label_name">Имя</label>
+                    <label class="block text-sm font-medium text-gray-700 mb-1" data-t="label_name">Имя</label>
                     <input type="text" id="order-name"
-                        class="w-full bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl p-3 focus:ring-2 focus:ring-green-500 outline-none dark:text-white transition-colors">
+                        class="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 focus:ring-2 focus:ring-green-500 outline-none">
                 </div>
 
                 <div>
-                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
-                        data-t="label_phone">Телефон</label>
+                    <label class="block text-sm font-medium text-gray-700 mb-1" data-t="label_phone">Телефон</label>
                     <input type="tel" id="order-phone" placeholder="+998"
-                        class="w-full bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl p-3 focus:ring-2 focus:ring-green-500 outline-none dark:text-white transition-colors">
+                        class="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 focus:ring-2 focus:ring-green-500 outline-none">
                 </div>
 
                 <div>
-                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
-                        data-t="label_district">Район
+                    <label class="block text-sm font-medium text-gray-700 mb-1" data-t="label_district">Район
                         (Ташкент)</label>
                     <select id="order-district"
-                        class="w-full bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl p-3 focus:ring-2 focus:ring-green-500 outline-none appearance-none dark:text-white transition-colors">
+                        class="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 focus:ring-2 focus:ring-green-500 outline-none appearance-none">
                         <option value="" disabled selected>Выберите район</option>
                         <option value="Алмазарский">Алмазарский</option>
                         <option value="Бектемирский">Бектемирский</option>
@@ -218,18 +189,17 @@
                 </div>
 
                 <div>
-                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
-                        data-t="label_address">Точный адрес
+                    <label class="block text-sm font-medium text-gray-700 mb-1" data-t="label_address">Точный адрес
                         (Улица, Дом, Кв)</label>
                     <textarea id="order-address" rows="3"
-                        class="w-full bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl p-3 focus:ring-2 focus:ring-green-500 outline-none dark:text-white transition-colors"></textarea>
+                        class="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 focus:ring-2 focus:ring-green-500 outline-none"></textarea>
                 </div>
 
             </div>
 
-            <div class="p-6 border-t border-gray-100 dark:border-gray-800">
+            <div class="p-6 border-t border-gray-100">
                 <button onclick="submitOrder()" id="submit-btn"
-                    class="w-full bg-black dark:bg-green-600 text-white py-4 rounded-xl font-bold shadow-lg active:scale-95 transition"
+                    class="w-full bg-black text-white py-4 rounded-xl font-bold shadow-lg active:scale-95 transition"
                     data-t="submit_btn">
                     Подтвердить заказ
                 </button>
@@ -239,7 +209,7 @@
 
     <!-- Notification -->
     <div id="toast"
-        class="fixed top-4 left-1/2 transform -translate-x-1/2 bg-gray-900 dark:bg-white text-white dark:text-gray-900 px-6 py-3 rounded-full shadow-xl z-[70] transition-opacity opacity-0 pointer-events-none text-sm font-medium">
+        class="fixed top-4 left-1/2 transform -translate-x-1/2 bg-gray-900 text-white px-6 py-3 rounded-full shadow-xl z-[70] transition-opacity opacity-0 pointer-events-none text-sm font-medium">
         Notification
     </div>
 
@@ -419,7 +389,7 @@
 
             container.innerHTML = categories.map(cat => `
                 <button onclick="setCategory('${cat === 'all' ? 'all' : escapeHtml(cat)}')" 
-                    class="px-4 py-2 rounded-full text-xs font-medium whitespace-nowrap transition ${state.activeCategory === cat ? 'bg-black dark:bg-white text-white dark:text-black' : 'bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700'}">
+                    class="px-4 py-2 rounded-full text-xs font-medium whitespace-nowrap transition ${state.activeCategory === cat ? 'bg-black text-white' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'}">
                     ${cat === 'all' ? TR[state.lang].all : escapeHtml(cat)}
                 </button>
             `).join('');
@@ -454,23 +424,23 @@
                 const count = inCart ? inCart.count : 0;
 
                 return `
-                <div class="bg-white dark:bg-gray-800 rounded-2xl p-4 shadow-[0_4px_20px_rgba(0,0,0,0.03)] border border-gray-50 dark:border-gray-700 flex flex-col items-center text-center group active:scale-[0.98] transition">
-                    <div class="w-full h-32 mb-4 flex items-center justify-center overflow-hidden rounded-xl bg-gray-50 dark:bg-gray-700 relative cursor-zoom-in" onclick="openImage('${p.image || ''}')">
+                <div class="bg-white rounded-2xl p-4 shadow-[0_4px_20px_rgba(0,0,0,0.03)] border border-gray-50 flex flex-col items-center text-center group active:scale-[0.98] transition">
+                    <div class="w-full h-32 mb-4 flex items-center justify-center overflow-hidden rounded-xl bg-gray-50 relative cursor-zoom-in" onclick="openImage('${p.image || ''}')">
                          <!-- Fallback image logic if needed -->
-                        <img src="${p.image || 'https://via.placeholder.com/150'}" class="h-full object-contain mix-blend-multiply dark:mix-blend-normal group-hover:scale-110 transition duration-500" alt="${escapeHtml(p.name)}">
+                        <img src="${p.image || 'https://via.placeholder.com/150'}" class="h-full object-contain mix-blend-multiply group-hover:scale-110 transition duration-500" alt="${escapeHtml(p.name)}">
                     </div>
-                    <h3 class="font-medium text-sm text-gray-800 dark:text-gray-100 line-clamp-2 mb-1 leading-tight">${escapeHtml(p.name)}</h3>
+                    <h3 class="font-medium text-sm text-gray-800 line-clamp-2 mb-1 leading-tight">${escapeHtml(p.name)}</h3>
                     <div class="mt-auto pt-3 w-full">
-                        <div class="text-green-700 dark:text-green-400 font-bold mb-3">${Number(p.price).toLocaleString()} UZS</div>
+                        <div class="text-green-700 font-bold mb-3">${Number(p.price).toLocaleString()} UZS</div>
                         
                         ${count > 0 ? `
-                            <div class="flex items-center justify-between bg-gray-900 dark:bg-gray-700 text-white rounded-xl overflow-hidden h-[42px]">
-                                <button onclick="updateProductCount('${escapeHtml(p.name)}', -1)" class="w-12 h-full flex items-center justify-center hover:bg-gray-700 dark:hover:bg-gray-600 transition font-bold text-lg">-</button>
+                            <div class="flex items-center justify-between bg-gray-900 text-white rounded-xl overflow-hidden h-[42px]">
+                                <button onclick="updateProductCount('${escapeHtml(p.name)}', -1)" class="w-12 h-full flex items-center justify-center hover:bg-gray-700 transition font-bold text-lg">-</button>
                                 <span class="font-bold text-sm">${count}</span>
-                                <button onclick="updateProductCount('${escapeHtml(p.name)}', 1)" class="w-12 h-full flex items-center justify-center hover:bg-gray-700 dark:hover:bg-gray-600 transition font-bold text-lg">+</button>
+                                <button onclick="updateProductCount('${escapeHtml(p.name)}', 1)" class="w-12 h-full flex items-center justify-center hover:bg-gray-700 transition font-bold text-lg">+</button>
                             </div>
                         ` : `
-                            <button onclick="updateProductCount('${escapeHtml(p.name)}', 1)" class="w-full bg-gray-900 dark:bg-white text-white dark:text-black text-xs font-bold py-3 rounded-xl hover:bg-green-600 dark:hover:bg-gray-200 transition h-[42px]">${TR[state.lang].add}</button>
+                            <button onclick="updateProductCount('${escapeHtml(p.name)}', 1)" class="w-full bg-gray-900 text-white text-xs font-bold py-3 rounded-xl hover:bg-green-600 transition h-[42px]">${TR[state.lang].add}</button>
                         `}
                     </div>
                 </div>
@@ -553,16 +523,16 @@
             }
 
             container.innerHTML = state.cart.map((item, idx) => `
-                <div class="flex items-center gap-4 bg-gray-50 dark:bg-gray-700/50 p-3 rounded-xl">
+                <div class="flex items-center gap-4 bg-gray-50 p-3 rounded-xl">
                     <img src="${item.image || 'https://via.placeholder.com/50'}" class="w-16 h-16 object-contain bg-white rounded-lg p-1">
                     <div class="flex-1">
-                        <div class="text-sm font-medium leading-tight mb-1 dark:text-white">${escapeHtml(item.name)}</div>
-                        <div class="text-xs text-gray-500 dark:text-gray-300">${Number(item.price).toLocaleString()} UZS</div>
+                        <div class="text-sm font-medium leading-tight mb-1">${escapeHtml(item.name)}</div>
+                        <div class="text-xs text-gray-500">${Number(item.price).toLocaleString()} UZS</div>
                     </div>
-                    <div class="flex items-center gap-3 bg-white dark:bg-gray-700 px-2 py-1 rounded-lg border border-gray-100 dark:border-gray-600 shadow-sm">
-                        <button onclick="updateCount(${idx}, -1)" class="w-6 h-6 flex items-center justify-center text-gray-400 hover:text-black dark:hover:text-white font-bold">-</button>
-                        <span class="text-sm font-medium w-4 text-center dark:text-white">${item.count}</span>
-                        <button onclick="updateCount(${idx}, 1)" class="w-6 h-6 flex items-center justify-center text-gray-400 hover:text-black dark:hover:text-white font-bold">+</button>
+                    <div class="flex items-center gap-3 bg-white px-2 py-1 rounded-lg border border-gray-100 shadow-sm">
+                        <button onclick="updateCount(${idx}, -1)" class="w-6 h-6 flex items-center justify-center text-gray-400 hover:text-black font-bold">-</button>
+                        <span class="text-sm font-medium w-4 text-center">${item.count}</span>
+                        <button onclick="updateCount(${idx}, 1)" class="w-6 h-6 flex items-center justify-center text-gray-400 hover:text-black font-bold">+</button>
                     </div>
                 </div>
             `).join('');
