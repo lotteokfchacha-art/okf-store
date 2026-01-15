@@ -62,15 +62,21 @@
                 <button onclick="toggleLang()"
                     class="text-sm font-medium text-gray-500 hover:text-gray-900 transition px-2 py-1 rounded-md hover:bg-gray-100"
                     id="lang-btn">RU</button>
-                <div class="relative cursor-pointer p-2 hover:bg-gray-100 rounded-full transition" onclick="openCart()">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-gray-700" fill="none"
-                        viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
-                    </svg>
-                    <span id="cart-badge"
-                        class="absolute top-0 right-0 bg-red-500 text-white text-[10px] font-bold w-4 h-4 rounded-full flex items-center justify-center hidden">0</span>
-                </div>
+                <button onclick="openCart()"
+                    class="flex items-center gap-2 cursor-pointer px-4 py-2 hover:bg-gray-100 rounded-full transition relative group">
+                    <div class="relative">
+                        <svg xmlns="http://www.w3.org/2000/svg"
+                            class="h-6 w-6 text-gray-700 group-hover:text-black transition" fill="none"
+                            viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
+                        </svg>
+                        <span id="cart-badge"
+                            class="absolute -top-1 -right-1 bg-red-500 text-white text-[10px] font-bold w-4 h-4 rounded-full flex items-center justify-center hidden shadow-sm border border-white">0</span>
+                    </div>
+                    <span class="font-medium text-gray-700 group-hover:text-black hidden md:block"
+                        data-t="cart_title">Корзина</span>
+                </button>
             </div>
         </div>
     </header>
@@ -245,7 +251,8 @@
                 submit_btn: 'Подтвердить заказ',
                 all: 'Все',
                 success: 'Заказ успешно отправлен!',
-                error: 'Ошибка отправки.'
+                error: 'Ошибка отправки.',
+                added: 'Добавлено в корзину: '
             },
             en: {
                 search: 'Search...',
@@ -262,7 +269,8 @@
                 submit_btn: 'Confirm Order',
                 all: 'All',
                 success: 'Order placed successfully!',
-                error: 'Error placing order.'
+                error: 'Error placing order.',
+                added: 'Added to cart: '
             },
             uz: {
                 search: 'Qidirish...',
@@ -279,7 +287,26 @@
                 submit_btn: 'Tasdiqlash',
                 all: 'Hammasi',
                 success: 'Buyurtma muvaffaqiyatli yuborildi!',
-                error: 'Buyurtma yuborishda xatolik.'
+                error: 'Buyurtma yuborishda xatolik.',
+                added: 'Savatga qo\'shildi: '
+            }
+        };
+
+        const CATEGORY_TR = {
+            en: {
+                'Напитки': 'Drinks',
+                'Сгущенка': 'Condensed Milk',
+                'Вафли': 'Wafers',
+                'Печенье': 'Cookies',
+                'Другое': 'Other',
+                // Add more as needed
+            },
+            uz: {
+                'Напитки': 'Ichimliklar',
+                'Сгущенка': 'Quyultirilgan sut',
+                'Вафли': 'Vafli',
+                'Печенье': 'Pechenye',
+                'Другое': 'Boshqa'
             }
         };
 
@@ -348,7 +375,7 @@
             log("URL: " + GAS_APP_URL);
 
             if (MOCK_MODE) {
-                state.products = MOCK_PRODUCTS;
+                state.products = MOCK_PRODUCTS.map((p, i) => ({ ...p, id: i }));
             } else {
                 try {
                     const res = await fetch(GAS_APP_URL);
@@ -383,14 +410,20 @@
             renderProducts();
         }
 
+        function getTranslatedCategory(cat) {
+            if (state.lang === 'ru') return cat;
+            return CATEGORY_TR[state.lang]?.[cat] || cat;
+        }
+
         function renderCategories() {
             const container = document.getElementById('category-chips');
+            // Unique categories
             const categories = ['all', ...new Set(state.products.map(p => p.category || 'Other'))];
 
             container.innerHTML = categories.map(cat => `
                 <button onclick="setCategory('${cat === 'all' ? 'all' : escapeHtml(cat)}')" 
-                    class="px-4 py-2 rounded-full text-xs font-medium whitespace-nowrap transition ${state.activeCategory === cat ? 'bg-black text-white' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'}">
-                    ${cat === 'all' ? TR[state.lang].all : escapeHtml(cat)}
+                    class="px-4 py-2 rounded-full text-sm font-medium whitespace-nowrap transition ${state.activeCategory === cat ? 'bg-black text-white' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'}">
+                    ${cat === 'all' ? TR[state.lang].all : escapeHtml(getTranslatedCategory(cat))}
                 </button>
             `).join('');
         }
@@ -419,8 +452,9 @@
                 return;
             }
 
-            grid.innerHTML = filtered.map((p, idx) => {
-                const inCart = state.cart.find(c => c.name === p.name);
+            grid.innerHTML = filtered.map((p) => {
+                // Find by ID for robustness
+                const inCart = state.cart.find(c => c.id === p.id);
                 const count = inCart ? inCart.count : 0;
 
                 return `
@@ -429,18 +463,18 @@
                          <!-- Fallback image logic if needed -->
                         <img src="${p.image || 'https://via.placeholder.com/150'}" class="h-full object-contain mix-blend-multiply group-hover:scale-110 transition duration-500" alt="${escapeHtml(p.name)}">
                     </div>
-                    <h3 class="font-medium text-sm text-gray-800 line-clamp-2 mb-1 leading-tight">${escapeHtml(p.name)}</h3>
+                    <h3 class="font-medium text-sm text-gray-800 line-clamp-2 mb-1 leading-tight h-10 flex items-center justify-center">${escapeHtml(p.name)}</h3>
                     <div class="mt-auto pt-3 w-full">
                         <div class="text-green-700 font-bold mb-3">${Number(p.price).toLocaleString()} UZS</div>
                         
                         ${count > 0 ? `
                             <div class="flex items-center justify-between bg-gray-900 text-white rounded-xl overflow-hidden h-[42px]">
-                                <button onclick="updateProductCount('${escapeHtml(p.name)}', -1)" class="w-12 h-full flex items-center justify-center hover:bg-gray-700 transition font-bold text-lg">-</button>
+                                <button onclick="updateProductCount(${p.id}, -1)" class="w-12 h-full flex items-center justify-center hover:bg-gray-700 transition font-bold text-lg">-</button>
                                 <span class="font-bold text-sm">${count}</span>
-                                <button onclick="updateProductCount('${escapeHtml(p.name)}', 1)" class="w-12 h-full flex items-center justify-center hover:bg-gray-700 transition font-bold text-lg">+</button>
+                                <button onclick="updateProductCount(${p.id}, 1)" class="w-12 h-full flex items-center justify-center hover:bg-gray-700 transition font-bold text-lg">+</button>
                             </div>
                         ` : `
-                            <button onclick="updateProductCount('${escapeHtml(p.name)}', 1)" class="w-full bg-gray-900 text-white text-xs font-bold py-3 rounded-xl hover:bg-green-600 transition h-[42px]">${TR[state.lang].add}</button>
+                            <button onclick="updateProductCount(${p.id}, 1)" class="w-full bg-gray-900 text-white text-xs font-bold py-3 rounded-xl hover:bg-green-600 transition h-[42px]">${TR[state.lang].add}</button>
                         `}
                     </div>
                 </div>
@@ -448,26 +482,7 @@
         }
 
         // --- CART ---
-        function addToCart(idx) {
-            // Need to find actual product object from filtered list if filtered? 
-            // Better to pass ID or name. Since simple, let's look up in state.products 
-            // But wait, the index above came from filtered list? No, map index works if we pass the object.
-            // Let's refactor render to pass the name.
-            const product = document.getElementById('product-grid').children[idx].querySelector('h3').innerText;
-            const item = state.products.find(p => p.name === product); // Simple match
 
-            if (!item) return;
-
-            const existing = state.cart.find(i => i.name === item.name);
-            if (existing) {
-                existing.count++;
-            } else {
-                state.cart.push({ ...item, count: 1 });
-            }
-            saveCart();
-            showToast('+ ' + item.name);
-            updateBadge();
-        }
 
         function loadCart() {
             const saved = localStorage.getItem('okf_cart');
@@ -546,18 +561,19 @@
             saveCart();
         }
 
-        function updateProductCount(name, delta) {
-            const itemIdx = state.cart.findIndex(i => i.name === name);
+        function updateProductCount(id, delta) {
+            const itemIdx = state.cart.findIndex(i => i.id === id);
+
             if (itemIdx > -1) {
                 state.cart[itemIdx].count += delta;
                 if (state.cart[itemIdx].count <= 0) {
                     state.cart.splice(itemIdx, 1);
                 }
             } else if (delta > 0) {
-                const product = state.products.find(p => p.name === name);
+                const product = state.products.find(p => p.id === id);
                 if (product) {
                     state.cart.push({ ...product, count: 1 });
-                    showToast('+ ' + product.name);
+                    showToast(TR[state.lang].added + product.name);
                 }
             }
             saveCart();
