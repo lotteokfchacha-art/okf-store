@@ -311,11 +311,11 @@
         };
 
         const MOCK_PRODUCTS = [
-            { name: 'OKF Aloe Vera Original', price: 12000, category: 'Drinks', image: 'https://m.media-amazon.com/images/I/71u-sE+bZ+L._SL1500_.jpg' },
-            { name: 'OKF Aloe Vera King', price: 15000, category: 'Drinks', image: 'https://m.media-amazon.com/images/I/41DqWspB-JL.jpg' },
-            { name: 'OKF Coffee Drink', price: 18000, category: 'Coffee', image: 'https://m.media-amazon.com/images/I/71R1k-wQy1L.jpg' },
-            { name: 'Milkis Original', price: 11000, category: 'Soda', image: 'https://m.media-amazon.com/images/I/61kP7J+VqLL.jpg' },
-            { name: 'Choco Pie', price: 25000, category: 'Snacks', image: 'https://m.media-amazon.com/images/I/61F+d+a+VLL.jpg' },
+            { name: 'OKF Aloe Vera Original', price: 12000, category: 'Drinks', country: 'Корея', image: 'https://m.media-amazon.com/images/I/71u-sE+bZ+L._SL1500_.jpg' },
+            { name: 'OKF Aloe Vera King', price: 15000, category: 'Drinks', country: 'Корея', image: 'https://m.media-amazon.com/images/I/41DqWspB-JL.jpg' },
+            { name: 'OKF Coffee Drink', price: 18000, category: 'Coffee', country: 'Корея', image: 'https://m.media-amazon.com/images/I/71R1k-wQy1L.jpg' },
+            { name: 'Milkis Original', price: 11000, category: 'Soda', country: 'Корея', image: 'https://m.media-amazon.com/images/I/61kP7J+VqLL.jpg' },
+            { name: 'Choco Pie', price: 25000, category: 'Snacks', country: 'Корея', image: 'https://m.media-amazon.com/images/I/61F+d+a+VLL.jpg' },
         ];
 
         const log = (msg) => {
@@ -464,6 +464,7 @@
                         <img src="${p.image || 'https://via.placeholder.com/150'}" class="h-full object-contain mix-blend-multiply group-hover:scale-110 transition duration-500" alt="${escapeHtml(p.name)}">
                     </div>
                     <h3 class="font-medium text-sm text-gray-800 line-clamp-2 mb-1 leading-tight h-10 flex items-center justify-center">${escapeHtml(p.name)}</h3>
+                    ${p.country ? `<div class="text-[10px] text-gray-500 mb-2 uppercase tracking-wide border border-gray-200 rounded-md px-1 inline-block">${escapeHtml(p.country)}</div>` : ''}
                     <div class="mt-auto pt-3 w-full">
                         <div class="text-green-700 font-bold mb-3">${Number(p.price).toLocaleString()} UZS</div>
                         
