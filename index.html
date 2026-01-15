@@ -463,7 +463,7 @@
                          <!-- Fallback image logic if needed -->
                         <img src="${p.image || 'https://via.placeholder.com/150'}" class="h-full object-contain mix-blend-multiply group-hover:scale-110 transition duration-500" alt="${escapeHtml(p.name)}">
                     </div>
-                    <h3 class="font-medium text-xs md:text-sm text-gray-800 line-clamp-3 mb-1 leading-tight min-h-[2.5rem] flex items-center justify-center">${escapeHtml(p.name)}</h3>
+                    <h3 class="font-medium text-[11px] md:text-sm text-gray-800 mb-1 leading-snug min-h-[3rem] flex items-center justify-center">${escapeHtml(p.name)}</h3>
                     ${p.country ? `<div class="text-[10px] text-gray-500 mb-2 uppercase tracking-wide border border-gray-200 rounded-md px-1 inline-block">${escapeHtml(p.country)}</div>` : ''}
                     <div class="mt-auto pt-3 w-full">
                         <div class="text-green-700 font-bold mb-3">${Number(p.price).toLocaleString()} UZS</div>
