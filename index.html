@@ -252,7 +252,8 @@
                 all: 'Все',
                 success: 'Заказ успешно отправлен!',
                 error: 'Ошибка отправки.',
-                added: 'Добавлено в корзину: '
+                added: 'Добавлено в корзину: ',
+                min_order_error: 'Минимальная сумма заказа 300 000 сум'
             },
             en: {
                 search: 'Search...',
@@ -270,7 +271,8 @@
                 all: 'All',
                 success: 'Order placed successfully!',
                 error: 'Error placing order.',
-                added: 'Added to cart: '
+                added: 'Added to cart: ',
+                min_order_error: 'Minimum order amount is 300,000 UZS'
             },
             uz: {
                 search: 'Qidirish...',
@@ -288,7 +290,8 @@
                 all: 'Hammasi',
                 success: 'Buyurtma muvaffaqiyatli yuborildi!',
                 error: 'Buyurtma yuborishda xatolik.',
-                added: 'Savatga qo\'shildi: '
+                added: 'Savatga qo\'shildi: ',
+                min_order_error: 'Minimal buyurtma narxi 300 000 so\'m'
             }
         };
 
@@ -582,6 +585,11 @@
 
         // --- CHECKOUT ---
         function openCheckout() {
+            const total = state.cart.reduce((a, b) => a + (b.price * b.count), 0);
+            if (total < 300000) {
+                showToast(TR[state.lang].min_order_error);
+                return;
+            }
             closeCart();
             document.getElementById('checkout-modal').classList.remove('hidden');
         }
