@@ -6,10 +6,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>OKF Store</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet"
+        href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" />
     <style>
         body {
-            font-family: 'Inter', sans-serif;
+            font-family: "Pretendard Variable", "Pretendard", -apple-system, BlinkMacSystemFont, system-ui, Roboto, "Helvetica Neue", "Segoe UI", "Apple SD Gothic Neo", "Noto Sans KR", "Malgun Gothic", "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", sans-serif;
             -webkit-tap-highlight-color: transparent;
         }
 
@@ -84,6 +85,15 @@
     <!-- Main Content -->
     <main class="max-w-7xl mx-auto pt-20 px-4 md:px-8">
 
+        <!-- Hero Section -->
+        <div class="mb-10 py-6 border-b border-gray-50">
+            <h1 class="text-2xl md:text-4xl font-bold text-gray-900 mb-3" data-t="hero_title">OKF Store — Официальная
+                витрина дистрибьютора в Узбекистане</h1>
+            <p class="text-gray-600 text-sm md:text-lg max-w-3xl leading-relaxed" data-t="hero_subtitle">Оптовые и
+                розничные поставки качественных товаров. Выберите интересующие позиции и оставьте заявку на персональное
+                предложение.</p>
+        </div>
+
         <!-- Search & Filter -->
         <div
             class="sticky top-16 bg-white z-30 py-4 -mx-4 px-4 md:mx-0 md:px-0 border-b md:border-none border-gray-50 mb-6 flex flex-col md:flex-row md:items-center gap-4">
@@ -108,7 +118,34 @@
             <!-- Products injected by JS -->
             <div class="col-span-2 text-center py-10 text-gray-400 text-sm animate-pulse">Загрузка...</div>
         </div>
+
+        <!-- Payment & Delivery Info -->
+        <div class="mt-8 mb-12 bg-gray-50 rounded-2xl p-6 md:p-8 border border-gray-100">
+            <h2 class="text-xl font-bold mb-4 flex items-center gap-2" data-t="delivery_title">Оплата и Доставка</h2>
+            <div class="prose prose-sm text-gray-600 max-w-none leading-relaxed whitespace-pre-line"
+                data-t="delivery_text">
+                Для вашего удобства мы работаем по системе подтвержденных заказов:
+
+                Вы выбираете товар на сайте. Оформление заявок осуществляется на сумму от 300 000 UZS.
+
+                Наш менеджер связывается с вами для уточнения деталей, проверки наличия и согласования времени доставки
+                в пределах города Ташкента.
+
+                Оплата производится после подтверждения наличия товара на складе. Мы работаем по системе персонального
+                обслуживания: менеджер проверяет резерв и связывается с вами для выбора удобного способа оплаты
+                (терминал, перечисление или наличные).
+            </div>
+        </div>
     </main>
+
+    <!-- Footer Legal -->
+    <footer class="max-w-7xl mx-auto px-4 md:px-8 pb-10 text-center md:text-left">
+        <p class="text-[10px] text-gray-400 leading-normal max-w-4xl" data-t="footer_legal">
+            Информация на сайте okf-store.uz не является публичной офертой. Сайт выполняет функцию электронного каталога
+            для ознакомления с ассортиментом компании. Все торговые операции финализируются вне данного ресурса в
+            соответствии с законодательством РУз.
+        </p>
+    </footer>
 
     <!-- Cart Modal -->
     <div id="cart-modal" class="fixed inset-0 z-50 hidden">
@@ -238,60 +275,75 @@
         const TR = {
             ru: {
                 search: 'Поиск...',
-                add: 'В корзину',
+                add: 'Добавить к заявке',
                 cart_title: 'Корзина',
                 cart_empty: 'В корзине пусто',
                 total: 'Итого:',
-                checkout_btn: 'Оформить заказ',
+                checkout_btn: 'Оформить заявку',
                 checkout_title: 'Оформление',
                 label_name: 'Имя',
                 label_phone: 'Телефон',
                 label_district: 'Район',
                 label_address: 'Адрес',
-                submit_btn: 'Подтвердить заказ',
+                submit_btn: 'Подтвердить заявку',
                 all: 'Все',
-                success: 'Заказ успешно отправлен!',
+                success: 'Заявка успешно отправлена!',
                 error: 'Ошибка отправки.',
-                added: 'Добавлено в корзину: ',
-                min_order_error: 'Минимальная сумма заказа 300 000 сум'
+                added: 'Добавлено в заявку: ',
+                min_order_error: 'Минимальная сумма заказа 300 000 сум',
+                hero_title: 'OKF Store — Официальная витрина дистрибьютора в Узбекистане',
+                hero_subtitle: 'Оптовые и розничные поставки качественных товаров. Выберите интересующие позиции и оставьте заявку на персональное предложение.',
+                delivery_title: 'Оплата и Доставка',
+                delivery_text: 'Для вашего удобства мы работаем по системе подтвержденных заказов:\n\nВы выбираете товар на сайте. Оформление заявок осуществляется на сумму от 300 000 UZS.\n\nНаш менеджер связывается с вами для уточнения деталей, проверки наличия и согласования времени доставки в пределах города Ташкента.\n\nОплата производится после подтверждения наличия товара на складе. Мы работаем по системе персонального обслуживания: менеджер проверяет резерв и связывается с вами для выбора удобного способа оплаты (терминал, перечисление или наличные).',
+                footer_legal: 'Информация на сайте okf-store.uz не является публичной офертой. Сайт выполняет функцию электронного каталога для ознакомления с ассортиментом компании. Все торговые операции финализируются вне данного ресурса в соответствии с законодательством РУз.'
             },
             en: {
                 search: 'Search...',
-                add: 'Add to Cart',
-                cart_title: 'Cart',
-                cart_empty: 'Cart is empty',
+                add: 'Add to Request',
+                cart_title: 'Request List',
+                cart_empty: 'List is empty',
                 total: 'Total:',
-                checkout_btn: 'Checkout',
-                checkout_title: 'Checkout',
+                checkout_btn: 'Proceed to Request',
+                checkout_title: 'Request Info',
                 label_name: 'Name',
                 label_phone: 'Phone',
                 label_district: 'District',
                 label_address: 'Address',
-                submit_btn: 'Confirm Order',
+                submit_btn: 'Confirm Request',
                 all: 'All',
-                success: 'Order placed successfully!',
-                error: 'Error placing order.',
-                added: 'Added to cart: ',
-                min_order_error: 'Minimum order amount is 300,000 UZS'
+                success: 'Request sent successfully!',
+                error: 'Error sending request.',
+                added: 'Added to request: ',
+                min_order_error: 'Minimum order amount is 300,000 UZS',
+                hero_title: 'OKF Store — Official Distributor Showcase in Uzbekistan',
+                hero_subtitle: 'Wholesale and retail supplies of quality products. Select items and submit a request for a personal offer.',
+                delivery_title: 'Payment & Delivery',
+                delivery_text: 'We work on a confirmed order basis for your convenience.\n\nYou select items on the site.\nOur manager contacts you to clarify details and availability.\n\nPayment is made after confirmation of stock availability. We work on a personal service basis: a manager checks the reserve and contacts you to choose a convenient payment method (terminal, bank transfer, or cash).',
+                footer_legal: 'Information on okf-store.uz is not a public offer. The site serves as an electronic catalog for product familiarization. All trading operations are finalized outside this resource in accordance with the legislation of the Republic of Uzbekistan.'
             },
             uz: {
                 search: 'Qidirish...',
-                add: 'Savatga',
-                cart_title: 'Savat',
-                cart_empty: 'Savat bo\'sh',
+                add: 'So\'rovga qo\'shish',
+                cart_title: 'So\'rov ro\'yxati',
+                cart_empty: 'Ro\'yxat bo\'sh',
                 total: 'Jami:',
-                checkout_btn: 'Buyurtma berish',
-                checkout_title: 'Buyurtma',
+                checkout_btn: 'Rasmiylashtirish',
+                checkout_title: 'Ma\'lumotlar',
                 label_name: 'Ism',
                 label_phone: 'Telefon',
                 label_district: 'Tuman',
                 label_address: 'Manzil',
                 submit_btn: 'Tasdiqlash',
                 all: 'Hammasi',
-                success: 'Buyurtma muvaffaqiyatli yuborildi!',
-                error: 'Buyurtma yuborishda xatolik.',
-                added: 'Savatga qo\'shildi: ',
-                min_order_error: 'Minimal buyurtma narxi 300 000 so\'m'
+                success: 'So\'rov muvaffaqiyatli yuborildi!',
+                error: 'Xatolik yuz berdi.',
+                added: 'Qo\'shildi: ',
+                min_order_error: 'Minimal buyurtma narxi 300 000 so\'m',
+                hero_title: 'OKF Store — O\'zbekistondagi rasmiy distribyutor vitrinasi',
+                hero_subtitle: 'Sifatli mahsulotlarning ulgurji va chakana ta\'minoti. Kerakli mahsulotlarni tanlang va shaxsiy taklif olish uchun so\'rov qoldiring.',
+                delivery_title: 'To\'lov va yetkazib berish',
+                delivery_text: 'Sizga qulay bo\'lishi uchun biz tasdiqlangan buyurtmalar tizimi asosida ishlaymiz.\n\nSiz saytda mahsulot tanlaysiz.\nMenejerimiz tafsilotlar va mavjudligini aniqlashtirish uchun siz bilan bog\'lanadi.\n\nTo\'lov omborda tovar mavjudligi tasdiqlangandan keyin amalga oshiriladi. Biz shaxsiy xizmat ko\'rsatish tizimi bo\'yicha ishlaymiz: menejer zaxirani tekshiradi va qulay to\'lov usulini (terminal, o\'tkazma yoki naqd pul) tanlash uchun siz bilan bog\'lanadi.',
+                footer_legal: 'okf-store.uz saytidagi ma\'lumotlar ommaviy oferta hisoblanmaydi. Sayt kompaniya assortimenti bilan tanishish uchun elektron katalog vazifasini bajaradi. Barcha savdo operatsiyalari O\'zbekiston Respublikasi qonunchiligiga muvofiq ushbu resursdan tashqarida yakunlanadi.'
             }
         };
 
