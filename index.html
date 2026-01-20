@@ -461,12 +461,12 @@
                 const count = inCart ? inCart.count : 0;
 
                 return `
-                <div class="bg-white rounded-2xl p-4 shadow-[0_4px_20px_rgba(0,0,0,0.03)] border border-gray-50 flex flex-col items-center text-center group active:scale-[0.98] transition">
+                <div class="bg-white rounded-2xl p-4 shadow-[0_4px_20px_rgba(0,0,0,0.03)] border border-gray-50 flex flex-col items-center text-center group active:scale-[0.98] transition h-full">
                     <div class="w-full h-32 mb-4 flex items-center justify-center overflow-hidden rounded-xl bg-gray-50 relative cursor-zoom-in" onclick="openImage('${p.image || ''}')">
                          <!-- Fallback image logic if needed -->
-                        <img src="${p.image || 'https://via.placeholder.com/150'}" class="h-full object-contain mix-blend-multiply group-hover:scale-110 transition duration-500" alt="${escapeHtml(p.name)}">
+                        <img src="${p.image || 'https://via.placeholder.com/150'}" class="h-full object-contain group-hover:scale-110 transition duration-500" alt="${escapeHtml(p.name)}">
                     </div>
-                    <h3 class="font-medium text-xs md:text-sm text-gray-800 mb-2 leading-snug w-full text-center">${escapeHtml(p.name)}</h3>
+                    <h3 class="font-medium text-xs md:text-sm text-gray-800 mb-2 leading-snug w-full text-center line-clamp-2 min-h-[40px] flex items-center justify-center">${escapeHtml(p.name)}</h3>
                     ${p.country ? `<div class="text-[10px] text-gray-500 mb-2 uppercase tracking-wide border border-gray-200 rounded-md px-1 inline-block">${escapeHtml(p.country)}</div>` : ''}
                     <div class="mt-auto pt-3 w-full">
                         <div class="text-green-700 font-bold mb-3">${Number(p.price).toLocaleString()} UZS</div>
